@@ -31,6 +31,18 @@ socketIO.on("connection", (socket) => {
     socketIO.emit("newUserResponse", users);
     socket.disconnect();
   });
+
+  socket.on("callUser", (data) => {
+    socketIO.to(data.userToCall).emit("callUser", {
+      signal: data.signalData,
+      from: data.from,
+      name: data.name,
+    });
+  });
+
+  socket.on("answerCall", (data) => {
+    socketIO.to(data.to).emit("callAccepted", data.signal);
+  });
 });
 
 app.get("/api", (req, res) => {
